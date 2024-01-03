@@ -185,7 +185,7 @@ pypdf==3.17.1
 PyPDF2==3.0.1
 PyPika==0.48.9
 pyreadline3==3.4.1
-pysftp==0.2.9
+pysftp==0.2.8
 PySocks==1.7.1
 python-dateutil==2.8.2
 python-dotenv==1.0.0
