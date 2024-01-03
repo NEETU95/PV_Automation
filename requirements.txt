@@ -260,3 +260,6 @@ keybert~=0.8.3
 pip~=23.3.2
 wheel~=0.42.0
 cryptography~=41.0.7
+
+stremlit
+pysftp==0.2.9
