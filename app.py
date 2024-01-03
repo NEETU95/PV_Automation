@@ -33,10 +33,8 @@ class PdfExtractionHandler(RequestHandler):
             self.write(f"Error processing PDF: {str(e)}")
 
 def pdf_extraction(pdf_info:str):
-    try:
-        cnopts = pysftp.CnOpts()
-        cnopts.hostkeys = None
-        ftp = pysftp.Connection('testnovumgen.topiatech.co.uk', username='pvtestuser', password='Umlup01cli$$6969', cnopts=cnopts)
+    try:     
+        ftp = pysftp.Connection('testnovumgen.topiatech.co.uk', username='pvtestuser', password='Umlup01cli$$6969')
         with ftp.cd('/var/sftp/upload/pvtestusers/'):
             files = ftp.listdir()
             for file in files:
