@@ -1,42 +1,35 @@
-from typing import List
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.chains import create_extraction_chain_pydantic
-from langchain.llms import LlamaCpp
-from langchain.output_parsers import PydanticOutputParser
-from langchain.prompts import PromptTemplate
-from pydantic import BaseModel, Field
-from langchain_experimental.chat_models import Llama2Chat
-
-class Actor(BaseModel):
-    Age: str = Field(description="age of a patient")
-    diseases: List[str] = Field(description="list of diseases of patient")
+from fastapi import FastAPI, HTTPException
+import requests
+from PyPDF2 import PdfReader
+from general_reporter import get_general_reporter
+from patient_tab import get_patient_text
+from parent import get_parent_text
+import spacy
+import pysftp
 
 
-llm = LlamaCpp(
-    model_path="./llama.cpp/models/llama-2-7b-chat.gguf.q4_0.bin",
-    callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
-    verbose=True
-)
-parser = PydanticOutputParser(pydantic_object=Actor)
-context = """A 15-months-old girl who  has admitted with shocks, fever, vomitings, confusion, excessive fatigue and diarrhea.
-she was diagnosed with COVID-19. she had no previous history of immunodeficiency or medical comorbidities. Moderate splenomegaly was evident without lymphadenopathy.
-complete blood count revealed pancytopenia. Her mother had a medical history of cancer."""
-
-prompt = PromptTemplate(
-    template="Extract fields from a given text.\n{format_instructions}\n{text}\n",
-    input_variables=["text"],
-    partial_variables={"format_instructions": parser.get_format_instructions()},
+# Create a FastAPI instance
+app = FastAPI(
+    openapi_url="/api/v1/openapi",  # Set the OpenAPI schema URL
+    docs_url="/documentation",  # Set the Swagger UI URL
+    redoc_url=None  # Disable ReDoc by setting its URL to None
 )
 
-# _input = prompt.format_prompt(text=context)
-# output = llm(_input.to_string())
-#
-# parsed = parser.parse(output)
-#
-# print("parsed output is", parsed)
-
-model = Llama2Chat(llm=llm)
-extractor = create_extraction_chain_pydantic(pydantic_schema=Actor, llm=llm)
-extracted = extractor.run(context=context)
-print("extracted", extracted)
+@app.post("/")
+def pdf_to_json(pdf_info:str):
+    #try:
+        # ftp = pysftp.Connection('testnovumgen.topiatech.co.uk', username='pvtestuser', password='Umlup01cli$$6969')
+        # with ftp.cd('/var/sftp/upload/pvtestusers/'):
+        #     files = ftp.listdir()
+        #     for file in files:
+        #         if pdf_info in file:
+        #             ftp.get(file)
+        #             print('yes downloaded both files')
+        #             if 'Weekly' in file:
+        #                 weekly_reader = file
+        #                 downloaded = True
+        #             else:
+        #                 downloaded = False
+    # except Exception as e:
+    #     raise HTTPException(status_code=404, detail=e)
+    return pdf_info
