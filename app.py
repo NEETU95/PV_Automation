@@ -111,6 +111,7 @@ def pdf_extraction(pdf_info:str):
 
     except Exception as e:
         # raise HTTPException(status_code=500, detail=f"Error processing PDF: {str(e)}")
+        print(e)
         return response.status_code
 
 
