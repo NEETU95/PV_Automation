@@ -58,7 +58,7 @@ def pdf_extraction(pdf_info:str):
         weekly_text = ""
         all_text = ""
         nlp = spacy.load("en_core_web_sm")
-        nlp_1 = spacy.load("en_ner_bc5cdr_md-0.5.3/en_ner_bc5cdr_md/en_ner_bc5cdr_md-0.5.3")
+        nlp_1 = spacy.load(r"en_ner_bc5cdr_md-0.5.3/en_ner_bc5cdr_md/en_ner_bc5cdr_md-0.5.3")
         # Loop through all pages and extract text
         for page_num in range(source_file_num_pages):
             page = source_file_reader.pages[page_num]
