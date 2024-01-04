@@ -141,12 +141,68 @@ class GetHandler(RequestHandler):
             self.set_status(500)
             response_data = {"error": f"Error processing GET request: {str(e)}"}
             self.finish(response_data)
-            
+
+class PdfExtractionHandlerWithPysftp(RequestHandler):
+    def get(self, pdf_info):
+        try:
+            # Your existing pdf_extraction code
+            # Replace 'pdf_info' with the actual value or information you want to pass
+            pdf_extraction_with_pysftp(pdf_info)
+        except Exception as e:
+            self.set_status(500)
+            self.write(f"Error processing PDF: {str(e)}")
+
+
+def pdf_extraction_with_pysftp(pdf_info: str):
+    class My_Connection(pysftp.Connection):
+        def __init__(self, *args, **kwargs):
+            try:
+                if kwargs.get('cnopts') is None:
+                    kwargs['cnopts'] = pysftp.CnOpts()
+                    kwargs['cnopts'].hostkeys.load('ssh_host_key_new')
+                    # cnopts = pysftp.CnOpts()
+                    # cnopts.hostkeys.load('ssh_host_rsa_key')
+                    # kwargs['cnopts'].hostkeys = None
+            except pysftp.HostKeysException as e:
+                self._init_error = True
+                raise paramiko.ssh_exception.SSHException(str(e))
+            else:
+                self._init_error = False
+
+            self._sftp_live = False
+            self._transport = None
+            super().__init__(*args, **kwargs)
+
+        def __del__(self):
+            if not self._init_error:
+                self.close()
+
+    try:
+        # cnopts.hostkeys.load('ssh_host_rsa_key')
+        with My_Connection('testnovumgen.topiatech.co.uk', username='pvtestuser', password='Umlup01cli$$6969') as sftp:
+            l = sftp.listdir()
+            with sftp.cd('/var/sftp/upload/pvtestusers/'):
+                files = sftp.listdir()
+                print(files)
+            for file in files:
+                if 'main_file.pdf' in file:
+                    print('yes')
+                    sftp.get(file)
+                    print('yes downloaded both files')
+                    # if 'Weekly' in file:
+                    #     weekly_reader = file
+                    #     downloaded = True
+                    # else:
+                    #     downloaded = False
+
+    except paramiko.ssh_exception.SSHException as e:
+        print(e)
+
 # Usage of setup_api_handler with PdfExtractionHandler
 setup_api_handler('/api/pdf_extraction/([^/]+)?', PdfExtractionHandler)
 setup_api_handler('/api/get_demo/([^/]+)?', GetHandler)
 setup_api_handler('/api/post_demo/([^/]+)?', PostHandler)
-
+setup_api_handler('/api/pdftest/([^/]+)?', PdfExtractionHandlerWithPysftp)
 
 
 # from tornado.web import RequestHandler, Application
