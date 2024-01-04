@@ -37,8 +37,8 @@ def pdf_extraction(pdf_info:str):
         cnopts = pysftp.CnOpts()
         cnopts.hostkeys = None        
         ftp = pysftp.Connection('testnovumgen.topiatech.co.uk', username='pvtestuser', password='Umlup01cli$$6969', cnopts=cnopts)
-        ftp._sftp_live = False
-        ftp._transport = None        
+        # ftp._sftp_live = False
+        # ftp._transport = None        
         with ftp.cd('/var/sftp/upload/pvtestusers/'):
             files = ftp.listdir()
             for file in files:
