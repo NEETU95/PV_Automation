@@ -110,25 +110,33 @@ def pdf_extraction(pdf_info:str):
         return response.status_code
 
 
-# New Tornado handler for handling GET requests
-class GetHandler(RequestHandler):
-    def get(self, data):
-        try:
-            # Handle GET request logic here
-            self.write(f"Handling GET request with data: {data}")
-        except Exception as e:
-            self.set_status(500)
-            self.write(f"Error processing GET request: {str(e)}")
+
 
 # New Tornado handler for handling POST requests
 class PostHandler(RequestHandler):
     def post(self, data):
         try:
             # Handle POST request logic here
-            self.write(f"Handling POST request with data: {data}")
+            response_data = {"message": f"Handling POST request with data: {data}"}
+            self.set_status(200)
+            self.finish(response_data)
         except Exception as e:
             self.set_status(500)
-            self.write(f"Error processing POST request: {str(e)}")
+            response_data = {"error": f"Error processing POST request: {str(e)}"}
+            self.finish(response_data)
+
+# New Tornado handler for handling GET requests
+class GetHandler(RequestHandler):
+    def get(self, data):
+        try:
+            # Handle GET request logic here
+            response_data = {"message": f"Handling GET request with data: {data}"}
+            self.set_status(200)
+            self.finish(response_data)
+        except Exception as e:
+            self.set_status(500)
+            response_data = {"error": f"Error processing GET request: {str(e)}"}
+            self.finish(response_data)
             
 # Usage of setup_api_handler with PdfExtractionHandler
 setup_api_handler('/api/pdf_extraction/([^/]+)?', PdfExtractionHandler)
